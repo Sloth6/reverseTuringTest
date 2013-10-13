@@ -1,5 +1,5 @@
 {
-  "name": "Reverse Turing Test!",
+  "name": "Reverse-Turing-Test!",
   "version": "0.0.1",
   "description": "A game about a reverse Turing test",
   "keywords": [
@@ -14,7 +14,7 @@
     "email": "joelsimon6@gmail.com",
     "url":  "joelsimon.net"
   },
-  "homepage": "reverseTuring.com",
+  "homepage": "http://reverseTuring.com",
   "repository": {
     "type": "git",
     "url": "https://github.com/Sloth6/reverseTuringTest"

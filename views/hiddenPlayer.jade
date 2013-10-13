@@ -1,0 +1,24 @@
+doctype 5
+html
+  head
+    link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Open+Sans')
+    link(rel='stylesheet', href='/css/style.css')
+    script(src='/js/socket.io.min.js')
+    script(src='/js/jquery-1.9.1.min.js')
+    script(src='/js/elizabot.js')
+    script(src='/js/elizadata.js')
+    script(src='/js/indexBot.js')
+    title Reverse Turing
+  body
+    h1 !{name}
+    div
+      div.inlineBlock
+        br
+        form#messageForm
+          textarea(rows="4", cols="50", placeholder="Enter", maxlength=200)#outgoingMessage
+          br
+          input(type="button", value="Share", disabled=true)#send
+          input(type="button", value="Accuse")#accuse
+      div.inlineBlock.topAligned
+
+    div#messages

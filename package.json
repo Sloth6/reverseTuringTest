@@ -1,23 +1,23 @@
 {
-  "name": "nodejs-express-socketio-chatroom",
-  "version": "1.0.0",
-  "description": "A simple chatroom",
+  "name": "Reverse Turing Test!",
+  "version": "0.0.1",
+  "description": "A game about a reverse Turing test",
   "keywords": [
-    "express",
-    "Node.js",
-    "socket.io",
-    "underscore",
-    "chatroom"
+    "game",
+    "threejs",
+    "webgl",
+    "embedded html",
+    "reverse Turing"
   ],
   "author": {
-    "name": "William Mora",
-    "email": "william.r.mora@gmail.com",
-    "url":  "http://www.williammora.com/"
+    "name": "Joel Simon",
+    "email": "joelsimon6@gmail.com",
+    "url":  "joelsimon.net"
   },
-  "homepage": "http://www.williammora.com/",
+  "homepage": "reverseTuring.com",
   "repository": {
     "type": "git",
-    "url": "https://github.com/wmora/nodejs-express-socketio-chatroom.git"
+    "url": "https://github.com/Sloth6/reverseTuringTest"
   },
   "engines": {
     "node": ">= 0.6.0",
@@ -27,7 +27,7 @@
     "express": "3.1.0",
     "jade": "*",
     "socket.io": "*",
-    "underscore": "*"
+    "forever": "*"
   },
   "devDependencies": {},
   "bundleDependencies": [],

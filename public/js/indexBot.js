@@ -7,7 +7,8 @@ function init() {
    Note we don't specify a port since we set up our server
    to run on port 8080
    */
-  var socket = io.connect(serverBaseUrl);
+  var socket = io.connect(serverBaseUrl+':9002');
+  console.log(serverBaseUrl+':9002');
 
   //We'll save our session ID in a variable for later
   var sessionId = '';

@@ -1,23 +1,55 @@
 
 // MAIN
 // standard global variables
-var container, scene, cssScene ,camera, renderer, game, stats;
+var container, scene, cssScene ,camera, renderer, game, stats, theta =0;
 var keyboard = new THREEx.KeyboardState();
 var clock = new THREE.Clock();
 // custom global variables
 var rendererCSS;
 var tabs = [];
 var pi = 3.1415;
-var current = 0;
+var current = 1;
 var moving = false;
 game = {
-	players : ['b','b','p','b','b'],
+	players : ['b','b','b','b','b'],
 	total : 5
 };
 
+game.players[Math.floor(Math.random()*game.total)] = 'p';
+
 init(game);
 animate();
+
 moveTo(0);
+function turn(n) {
+	console.log(n);
+	if(moving)return;
+	moving = true;
+	var sum = game.total;
+	var theta = (360/sum) * (pi/180); 
+	var r = 300;
+	var tween = new TWEEN.Tween( { a: current*theta } )
+    .to( { a: theta*n}, 1000 )
+    .easing( TWEEN.Easing.Quadratic.InOut )
+    .onUpdate( function () {
+			for (var i = 0; i < sum; i++) {
+				var t = ((i * theta))+ pi/2 + (this.a);
+				x = Math.floor(Math.cos(t) * r);
+				z = Math.floor(Math.sin(t) * r);
+				tabs[i].planeMesh.position.x = x;
+				tabs[i].planeMesh.position.z = z;
+				tabs[i].planeMesh.rotation.y = (3*pi/2 - t)
+			}
+    })
+    .onComplete(function(){
+			moving = false;
+			current = game.total-n;
+			console.log(game.total-n);
+		})
+    .start();
+}
+
+
 function moveTo(n) {
 	console.log(n);
 	n = game.total-n;
@@ -41,7 +73,8 @@ function moveTo(n) {
     })
     .onComplete(function(){
 			moving = false;
-			current = n;
+			current = n;//game.total-n;
+			console.log(game.total-n);
 		})
     .start();
 }
@@ -104,9 +137,9 @@ function init(game) {
 		x = Math.floor(Math.cos(t) * r);
 		z = Math.floor(Math.sin(t) * r);
 		if (game.players[i] == 'b') {
-			var url = 'http://localhost:8080/bot?n=Bot_'+i;
+			var url = 'http://204.236.234.28:9002/bot?n=Bot_'+i;
 		} else {
-			var url = 'http://localhost:8080/hidden?n=Bot_'+i;
+			var url = 'http://204.236.234.28:9002/hidden?n=Bot_'+i;
 		}
 		tabs.push(new Tab(x,z, 300, 240, (3*pi/2 - t), url, scene, cssScene));
 	};
@@ -140,15 +173,22 @@ var foo = 0;
 var total = game.total;
 function update() {
 	for (var i = 0; i < total; i++) {
-		if ( keyboard.pressed(''+i)&&(!moving))(moveTo(i));
+		if ( keyboard.pressed(''+i)&&(!moving)){
+			(moveTo(i));
+			// console.log(i);
+		}
+
 	}
 	if ( keyboard.pressed('left')) {
-		if (current == 0) moveTo(total-1);
-		else moveTo(current-1);
+		// console.log(current);
+		turn(1);
+		// if (current == 0) moveTo(total-1);
+		// moveTo(total- current);
 
 	} else if ( keyboard.pressed('right')) {
-		if (current == total-1) moveTo(0);
-		else moveTo(current+1);
+		turn(-1);
+		// if (current == total-1) moveTo(0);
+		// else moveTo(current+1);
 
 	}
 	// camera.lookAt(0,0,0);	

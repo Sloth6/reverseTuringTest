@@ -1,10 +1,14 @@
 var express = require("express")
   , app = express()
-  , http = require("http").createServer(app)
-  , io = require("socket.io").listen(http)
+  , server = require('http').createServer(app)
+  , io = require('socket.io').listen(server)
   , _ = require("underscore");
 
+server.listen(9002);
+
 io.set('log level', 1);
+
+// var server = app.listen(9002);
 
 /*
  The list of participants in our chatroom.
@@ -19,10 +23,10 @@ var participants = []
 /* Server config */
 
 //Server's IP address
-app.set("ipaddr", "127.0.0.1");
+// app.set("ipaddr", "http://204.236.234.28");
 
 //Server's port number
-app.set("port", 9002);
+// app.set("port", 3030);
 
 //Specify the views folder
 app.set("views", __dirname + "/views");
@@ -62,7 +66,7 @@ app.get("/hidden", function(request, response) {
   response.render("hiddenPlayer", {'name': name});
 });
 app.get("/game", function(request, response) {
-  response.render("patient");
+  response.render("game");
 });
 
 //POST method to create a chat message
@@ -123,6 +127,8 @@ io.on("connection", function(socket){
 });
 
 //Start the http server at port and IP defined before
-http.listen(app.get("port"), app.get("ipaddr"), function() {
-  console.log("Server up and running. Go to http://" + app.get("ipaddr") + ":" + app.get("port"));
-});
+
+
+// http.listen(app.get("port"), app.get("ipaddr"), function() {
+//   console.log("Server up and running. Go to http://" + app.get("ipaddr") + ":" + app.get("port"));
+// });

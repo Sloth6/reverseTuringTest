@@ -46,6 +46,32 @@ function init() {
     
     $('#messages').prepend('<b>' + name + '</b><br />' + message + '<hr />');
   }
+
+  function pickRandom(r) {
+    var l = r.length;
+    return r[Math.floor(Math.random()*l)];
+  }
+  function genTypos(s) {
+    console.log(s);
+    var arr = s.split(' ');
+    for (var i = 0; i < arr.length; i++) {
+      if (Math.random() < .3) {
+        arr[i] = pickRandom(generateTypos([arr[i]], {
+        wrongKeys: false,
+        missedChars: true,
+        transposedChars: false,
+        doubleChars: false,
+        flipBits: false,
+        generateHomophones: false
+        }));
+      } else {
+        
+      }
+    };
+    return arr.reduce(function(a, b) {
+      return a+' '+b;
+    });
+  }
   var msgCount = 0;
   function sendMessage() {
     var outgoingMessage = $('#outgoingMessage').val();
@@ -53,9 +79,10 @@ function init() {
     if (msgCount < 5) {
       incomingMessage('patient', outgoingMessage);
       var eliza = elizaStep(outgoingMessage);
+      eliza = genTypos(eliza);
       setTimeout(function(){
         incomingMessage('Eliza', eliza);
-      }, 4000);
+      }, 0);//2000 + (eliza.length)*150);
       msgCount++;
     } else {
       alert('You have sent your maximum number of messages!');
@@ -63,6 +90,7 @@ function init() {
     
     
   }
+
   function accused(){
     alert('Incorrect! I am just a robot.')
   }

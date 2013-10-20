@@ -1,18 +1,19 @@
 
 // MAIN
 // standard global variables
-var container, scene, cssScene ,camera, renderer, game, stats, theta =0;
+var container, scene, cssScene ,camera, renderer, game, stats;
 var keyboard = new THREEx.KeyboardState();
 var clock = new THREE.Clock();
 // custom global variables
 var rendererCSS;
 var tabs = [];
+
 var pi = 3.1415;
-var current = 1;
+var current = 0;
 var moving = false;
 game = {
-	players : ['b','b','b','b','b'],
-	total : 5
+	players : ['b','b','b'],
+	total : 3
 };
 
 game.players[Math.floor(Math.random()*game.total)] = 'p';
@@ -20,64 +21,51 @@ game.players[Math.floor(Math.random()*game.total)] = 'p';
 init(game);
 animate();
 
-moveTo(0);
 function turn(n) {
-	console.log(n);
-	if(moving)return;
+	if(moving) return;
 	moving = true;
+
+
+	var from = tabs[current].planeMesh.position;
+	// var sweep  = from.copy();
+	current +=n;
+	current = (current >= game.total) ? current = 0 : current; 
+	current = (current < 0) ? current = game.total-1 : current;
+
+	// camera.lookAt(tabs[current].planeMesh.position);
+	var to = tabs[current].planeMesh.position;
+
+	console.log('moving to ', current);
 	var sum = game.total;
 	var theta = (360/sum) * (pi/180); 
-	var r = 300;
-	var tween = new TWEEN.Tween( { a: current*theta } )
-    .to( { a: theta*n}, 1000 )
-    .easing( TWEEN.Easing.Quadratic.InOut )
+	var r = 400;
+	
+	// var tween = new TWEEN.Tween( { a: startAngle } )
+ //    .to( { a: endAngle }, 1000 )
+ //    .easing( TWEEN.Easing.Quadratic.InOut )
+ //    .onUpdate( function () {
+ //    	var x = Math.sin((this.a)) * r;
+ //    	var z = Math.cos(this.a) * r;
+	// 		camera.lookAt(new THREE.Vector3(x, from.y, z));
+ //    })
+ //    .onComplete(function() {
+ //    	// camera.lookAt(to);
+	// 		moving = false;
+	// 	})
+ //    .start();
+
+	var tween = new TWEEN.Tween( { x:from.x, y: from.y, z:from.z } )
+    .to( { x:to.x, y:to.y, z:to.z }, 1000 )
+    .easing( TWEEN.Easing.Sinusoidal.Out)
     .onUpdate( function () {
-			for (var i = 0; i < sum; i++) {
-				var t = ((i * theta))+ pi/2 + (this.a);
-				x = Math.floor(Math.cos(t) * r);
-				z = Math.floor(Math.sin(t) * r);
-				tabs[i].planeMesh.position.x = x;
-				tabs[i].planeMesh.position.z = z;
-				tabs[i].planeMesh.rotation.y = (3*pi/2 - t)
-			}
+			camera.lookAt(new THREE.Vector3(this.x*1000, 150, this.z*1000));
     })
-    .onComplete(function(){
+    .onComplete(function() {
 			moving = false;
-			current = game.total-n;
-			console.log(game.total-n);
 		})
     .start();
 }
 
-
-function moveTo(n) {
-	console.log(n);
-	n = game.total-n;
-	if(moving)return;
-	moving = true;
-	var sum = game.total;
-	var theta = (360/sum) * (pi/180); 
-	var r = 300;
-	var tween = new TWEEN.Tween( { a: current*theta } )
-    .to( { a: theta*n}, 1000 )
-    .easing( TWEEN.Easing.Quadratic.InOut )
-    .onUpdate( function () {
-			for (var i = 0; i < sum; i++) {
-				var t = ((i * theta))+ pi/2 + (this.a);
-				x = Math.floor(Math.cos(t) * r);
-				z = Math.floor(Math.sin(t) * r);
-				tabs[i].planeMesh.position.x = x;
-				tabs[i].planeMesh.position.z = z;
-				tabs[i].planeMesh.rotation.y = (3*pi/2 - t)
-			}
-    })
-    .onComplete(function(){
-			moving = false;
-			current = n;//game.total-n;
-			console.log(game.total-n);
-		})
-    .start();
-}
 
 // FUNCTIONS 		
 function init(game) {
@@ -89,8 +77,8 @@ function init(game) {
 	var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
 	camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
 	scene.add(camera);
-	camera.position.set(0,200,0);
-	camera.lookAt(new THREE.Vector3(0,100,400));
+	camera.position.set(0,150,0);
+	camera.lookAt(0,150,0);
 	// RENDERER
 	if ( Detector.webgl )
 		renderer = new THREE.WebGLRenderer( {antialias:true} );
@@ -114,23 +102,11 @@ function init(game) {
 	var light = new THREE.PointLight(0xffffff);
 	light.position.set(0,250,0);
 	scene.add(light);
-	// FLOOR
-	var floorTexture = new THREE.ImageUtils.loadTexture( './images/checkerboard.jpg' );
-	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
-	floorTexture.repeat.set( 10, 10 );
-	var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
-	var floorGeometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
-	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
-	floor.position.y = -0.5;
-	floor.rotation.x = Math.PI / 2;
-	scene.add(floor);
-	////////////
-	// CUSTOM //
-	////////////
+
 	var sum = game.total;
 	var theta = 360/sum; 
 	var x, z;
-	var r = 300;
+	var r = 400;
 	var pi = 3.1415;
 	for (var i = 0; i < sum; i++) {
 		var t = ((i * theta)* (pi/180))+ pi/2;
@@ -143,7 +119,9 @@ function init(game) {
 		}
 		tabs.push(new Tab(x,z, 300, 240, (3*pi/2 - t), url, scene, cssScene));
 	};
-
+	console.log(camera);
+	var few = tabs[current].planeMesh.position;
+	camera.lookAt( new THREE.Vector3(few.x, 150, few.y));
 	// create a renderer for CSS
 	rendererCSS	= new THREE.CSS3DRenderer();
 	rendererCSS.setSize( window.innerWidth, window.innerHeight );
@@ -173,20 +151,23 @@ var foo = 0;
 var total = game.total;
 function update() {
 	for (var i = 0; i < total; i++) {
-		if ( keyboard.pressed(''+i)&&(!moving)){
-			(moveTo(i));
-			// console.log(i);
+		if ( keyboard.pressed(''+i) ){
+			if (i > current) {
+				turn (i -current);
+			} else {
+				turn (current - i);
+			}
 		}
 
 	}
 	if ( keyboard.pressed('left')) {
 		// console.log(current);
-		turn(1);
+		turn(-1);
 		// if (current == 0) moveTo(total-1);
 		// moveTo(total- current);
 
 	} else if ( keyboard.pressed('right')) {
-		turn(-1);
+		turn(1);
 		// if (current == total-1) moveTo(0);
 		// else moveTo(current+1);
 

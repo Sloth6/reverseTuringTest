@@ -49,28 +49,36 @@ function init() {
 
   function pickRandom(r) {
     var l = r.length;
-    return r[Math.floor(Math.random()*l)];
+    var elem = r[Math.floor(Math.random()*l)];
+    console.log('picked ', elem, ' out of ' , r);
+    return elem;
   }
   function genTypos(s) {
     console.log(s);
     var arr = s.split(' ');
+    var options;
     for (var i = 0; i < arr.length; i++) {
-      if (Math.random() < .3) {
-        arr[i] = pickRandom(generateTypos([arr[i]], {
-        wrongKeys: false,
+      if (Math.random() < .05) {
+        console.log('random word is', arr[i])
+        options = (generateTypos([arr[i]], {
+
+        wrongKeys: true,
         missedChars: true,
         transposedChars: false,
         doubleChars: false,
         flipBits: false,
-        generateHomophones: false
-        }));
+        generateHomophones: true
+        })[0]);
+        if (options.length) {
+          arr[i] = pickRandom(options);
+        };
       } else {
         
       }
     };
-    return arr.reduce(function(a, b) {
-      return a+' '+b;
-    });
+    return (arr.reduce(function(a, b) {
+          return a+' '+b;
+        })).replace(' ?', '?');
   }
   var msgCount = 0;
   function sendMessage() {
@@ -82,7 +90,7 @@ function init() {
       eliza = genTypos(eliza);
       setTimeout(function(){
         incomingMessage('Eliza', eliza);
-      }, 0);//2000 + (eliza.length)*150);
+      }, 2000 + (eliza.length)*150);
       msgCount++;
     } else {
       alert('You have sent your maximum number of messages!');
